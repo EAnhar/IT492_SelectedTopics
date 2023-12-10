@@ -1,40 +1,27 @@
-# Project-4-Brevets
+# IT492 Software Engineering, Testing, and Microservices
 
-Reimplement the RUSA ACP control time calculator with flask
-and ajax.
+## About
+Welcome to my IT492 repository! I'm Anhar, an IT student in the final year. This collection comprises projects undertaken during the Software Engineering, Testing, and Microservices course.
 
-Anhar Aldosari 411201886@qu.edu.sa
+## Highlights
+- **Learning Journey**: Overcame challenges, enjoyed the process, and shared valuable solutions.
+- **Skill Development**: Practical insights into software engineering, testing, and microservices.
+- **Community Contribution**: Sharing projects to benefit fellow learners.
 
-## Grading Rubric
+## Advice
+To my peers: Take on these projects independently. It's a fantastic way to refine your coding skills and deepen your understanding of the course concepts.
 
-* **[50 Points]** For passing our test cases (not given) that
-  exercise your implementation of the `acp_times.py`. We will 
-  write our test cases based on the requirements described on the
-  given documentation links.
-* **[30 Points]** For writing at least 5 **distinguishable** test 
-  cases that exercise your code (6 points each).<br>
-  ## Test opeining and closing time for:
-```
-  60km control with brevet distance 200 (the maximum time limit for a control within the first 60km is based on 20 km/hr, plus 1 hour.)
-  120km control with brevet distance 200 
-  150km control with brevet distance 200 
-  200km control with brevet distance 200 (Overall time limits )
-  205km control with brevet distance 200 (we use a distance of 200km in the calculation, even though the route was slightly longer than that (205km). By the rules, the overall time limit for a 200km brevet is 13H30, even though by calculation, 200/15 = 13H20. The fact that the route is somewhat longer than 200km is irrelevant.)
+## Projects
+Explore and contribute:
+0. [Project 0]()
+1. [Project 1]()
+2. [Project 2]()
+3. [Project 3]()
+4. [Project 4]()
+5. [Project 5]()
+6. [Project 6]()
 
-  311km control with brevet distance 400 
 
-  550km control with brevet distance 600 
-  600km control with brevet distance 600 (Overall time limits )
+Happy coding!
 
-  700km control with brevet distance 1000 
-  890km control with brevet distance 1000 
-  ```
-
-* **[20 Points]** For a working docker container!
-
-## Bonus Points
-* **[30 Points]** For improving the front functionality to validate
-  and communicate the typing of any invalid inputs. You decide what
-  is invalid based on the documentation, and you decide how you will
-  help the user understand what they did wrong, so they can correct
-  their inputs. by anhar
+---
