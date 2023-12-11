@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>تهجئة الكلمات by anhar</title>
+    <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
+    </script>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+          crossorigin="anonymous">
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+            integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+            crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="/static/jumble.css" />
+
+</head>
+<style>
+.guessed-word {
+    color: #999; /* A grey color */
+}
+</style>
+
+
+<body>
+<nav class="navbar bg-body-tertiary">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="../static/img/qu.png" alt="QU" width="30" height="24">
+        </a>
+        <div class="nav-item ms-auto">
+            <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">تعليمات المشروع</button>
+
+            <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasScrollingLabel">يجب تعديل التالي</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul>
+                        <li><p>جعل النظام يتحقق من الكلمات بدون الحاجة لتحديث كامل الصفحة عن طريق استخدام ايجاكس في الجزء الخاص بالمستخدم (حذف الزر الخاص المسمى "جرب" والاعتماد على Javascript)</p></li>
+                        <li><p>بناء السكريبت الاساسي من جانب الخادم لايصال المعلومة للجزء الخاص بالعميل</p></li>
+                        <li><p>ادارة التواصل بين جهة الخادم والمستخدم بحيث يكون التغيير الوحيد في كامل الصفحة عند اكمال الحل بشكل صحيح</p></li>
+                    </ul>
+                    <p class="fw-bold">اصلاحات اضافية</p>
+                    <ul>
+                        <li><p>توضيح الكلمات التي بدأ المستخدم بتخمينها بشكل تلقائي ومباشر اثناء كتابة المستخدم للكلمة</p></li>
+                        <li><p>شطب الكلمات التي تم تخمينها من قبل المستخدم من خلال تغيير لونها إلى لون اخر. مثلا تكون باللون الرصاصي.</p></li>
+                        <li><p>حذف الحروف التي يدخلها المستخدم ولا تكون من ضمن الحروف المحددة بشكل مباشر. أي اذا كانت الحروف المحددة "أ ب ت"، بمحاولة المستخدم الضغط على "ف" نقوم بحذف الحرف مباشرة.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+  </div>
+</nav>
+
+<div class="container text-center" style="border:1px solid #cecece;">
+    <br>
+    <div class="row">
+        <div class="col col-xs-6">
+            <h1>الكلمات</h1>
+        </div>
+    </div>
+    <div class="row">
+        {% for word in g.vocab %}
+            <div class="col col-xs-2 {% if word in session.matches %}guessed-word{% endif %}"> {{ word }}</div>
+            {% if loop.index is divisibleby 3 %}
+                </div> <!-- row -->
+                <div class="row">
+            {% endif %}
+        {% endfor %}
+    </div> <!-- row -->
+    
+    <br />
+
+    <div class="row">
+        <div class="col col-xs-6">
+            <p class="fs-3">استخدم احد الاحرف التالية</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-xs-6 lead">
+            <strong>{{ session.jumble }}</strong>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-xs-6">
+            <p class="fw-lighter">لتهجأة عدد {{session.target_count}} كلمات من القائمة</p>
+        </div> <!-- col -->
+    </div> <!-- row -->
+
+    <br />
+
+    <div class="row">
+        <div class="col col-xs-6">
+                <input id="attempt" name="attempt" type="text" width="15" autocomplete="off" autofocus />
+                <label for="attempt">الكلمة</label>
+        </div>
+    </div>
+    
+    <br />
+    
+<div id="response"></div>
+
+    <script>
+        $("#attempt").keyup(function(event) {
+            var txt = $("#attempt").val();
+            var jumble = "{{ session.jumble }}";
+
+            // Filter characters based on their existence in the jumble string.
+            txt = Array.from(txt).filter(char => jumble.includes(char));
+
+            // Further filter characters to retain only Arabic letters.
+            txt = txt.filter(char => /[\u0600-\u06FF\u0750-\u077F]/.test(char)).join('');
+
+            $("#attempt").val(txt);
+            
+            console.log(txt);
+
+            $.ajax({
+                type: "POST",
+                url: "/_check",
+                data: JSON.stringify({ attempt: txt }),
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    console.log(data);
+                    var flashMessage = data.result.flashMessage;
+                    var solved = data.result.solved;
+                    var matchesMade = data.result.matchesMade;
+                    var matchMade = data.result.matchMade;
+                    var newt = data.result.newt;
+
+                    if (flashMessage && flashMessage.length > 0) {
+                        matchMade = false 
+                    var wrong = '<div class="alert alert-warning alert-dismissible fade show" role="alert">' + 
+                                    flashMessage + 
+                                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                                '</div>';
+                        $("#response").append(wrong);
+                        flashMessage = "";
+                        $("#attempt").val(""); 
+                    }
+                    if (matchMade) {
+                        var matchAlertHTML = '<div class="alert alert-success" role="alert">' +
+                                            'تم ايجاد ' + newt +
+                                            '</div>';
+                        $("#response").append(matchAlertHTML);
+                        $("div.col:contains('" + newt + "')").addClass("guessed-word");
+                        $("#attempt").val(""); 
+                    }
+                    if (solved) {
+                        window.location.replace("/success");
+                    }
+                },
+                error: function() {
+                }
+            });
+        });
+    </script>
+</div> <!-- container -->
+
+</body>
+</html>
+
+
+   

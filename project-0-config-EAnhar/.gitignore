@@ -1,0 +1,4 @@
+# Simple files
+.DS_Store
+#*.ini 
+.idea

@@ -1,0 +1,29 @@
+<!-- <p><strong>Checkpoint</strong>&nbsp:&nbsp<strong>Open Time</strong>&nbsp:&nbsp<strong>Close Time</strong></p>
+{% for item in items %} 
+  <p>{{ item.kmInfoDone }} &nbsp:&nbsp {{ item.openInfoDone }} &nbsp:&nbsp {{ item.closeInfoDone }}<p>
+{% endfor %} -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Brevets Display</title>
+</head>
+<body>
+    <h1>Brevets Information</h1>
+    {% if brevets %}
+        <ul>
+            {% for brevet in brevets %}
+                <li>
+                    Distance: {{ brevet.brevet_dist }} km, Start Date: {{ brevet.begin_date }}, Start Time: {{ brevet.begin_time }}
+                    <ul>
+                        {% for control in brevet.controls %}
+                            <li>{{ control.km }} km - Open: {{ control.open }}, Close: {{ control.close }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No brevets data available.</p>
+    {% endif %}
+</body>
+</html>
